@@ -35,12 +35,23 @@ Requires Linux, Python 3.10+, Tk support (often packaged as `python3-tk`), and a
 graphical desktop session. No pip packages are needed. Google ADC additionally
 requires the Google Cloud CLI. `--check` does not open a desktop window.
 
+From this repository directory, install both files into your local bin:
+
+```bash
+install -d "$HOME/.local/bin"
+install -m 755 tokens token_overlay.py "$HOME/.local/bin/"
+```
+
+The launcher locates `token_overlay.py` beside itself, so both files are required.
+With `~/.local/bin` on PATH, `tokens` works from any project directory. Repeat
+the install command after updating the repository to refresh the installed copies.
+
 Put these lines in **`~/.bashrc`** (not `~./bashrc`), replacing the placeholders
 with your actual credentials and project. Omit provider settings you don't use.
 These must be **exported** so the launched Python process inherits them.
 
 ```bash
-export PATH="/home/tow73/AAS/scripts/token_overlay:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export OPENAI_ADMIN_KEY='YOUR_OPENAI_ORGANIZATION_ADMIN_KEY'
 export ANTHROPIC_ADMIN_KEY='YOUR_ANTHROPIC_ADMIN_KEY'
 export GOOGLE_CLOUD_PROJECT='gemini-api-505408'
@@ -108,6 +119,16 @@ Instead of using `~/.bashrc`, copy `.env.example` to `.env` beside the script:
 cp .env.example .env
 chmod 600 .env
 ```
+
+For the local-bin installation, keep this file in the repository and export its
+absolute path in `~/.bashrc`, for example:
+
+```bash
+export TOKEN_OVERLAY_ENV="$HOME/AAS/scripts/token_overlay/.env"
+```
+
+Without this override, the installed copy looks for `~/.local/bin/.env`, not
+the current project's `.env`.
 
 Exported shell variables take priority, even when empty. The file accepts literal
 `NAME=value` or `export NAME='value'` assignments and comments. Quote values with
