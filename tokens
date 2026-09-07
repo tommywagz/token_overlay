@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Inherit exported credentials; launch once or control the existing overlay.
+set -euo pipefail
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+case "${1:-}" in
+  --foreground)
+    shift
+    exec python3 "$script_dir/token_overlay.py" "$@"
+    ;;
+  --check|--refresh|--quit|--help|-h)
+    exec python3 "$script_dir/token_overlay.py" "$@"
+    ;;
+  ""|--show) ;;
+  *) exec python3 "$script_dir/token_overlay.py" "$@" ;;
+esac
+runtime_dir="${XDG_RUNTIME_DIR:-/tmp}/token-overlay-$(id -u)"
+if [[ -L "$runtime_dir" ]]; then
+  echo 'Error: overlay runtime directory must not be a symlink.' >&2
+  exit 1
+fi
+mkdir -p -m 700 -- "$runtime_dir"
+if [[ ! -O "$runtime_dir" ]]; then
+  echo 'Error: overlay runtime directory is owned by another user.' >&2
+  exit 1
+fi
+chmod 700 -- "$runtime_dir"
+log_file="$runtime_dir/overlay.log"
+if [[ -L "$log_file" ]]; then
+  echo 'Error: overlay log must not be a symlink.' >&2
+  exit 1
+fi
+umask 077
+nohup python3 "$script_dir/token_overlay.py" "$@" >>"$log_file" 2>&1 </dev/null &
+echo "Overlay launch requested. Log: $log_file"
