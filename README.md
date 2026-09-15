@@ -54,7 +54,7 @@ These must be **exported** so the launched Python process inherits them.
 export PATH="$HOME/.local/bin:$PATH"
 export OPENAI_ADMIN_KEY='YOUR_OPENAI_ORGANIZATION_ADMIN_KEY'
 export ANTHROPIC_ADMIN_KEY='YOUR_ANTHROPIC_ADMIN_KEY'
-export GOOGLE_CLOUD_PROJECT='gemini-api-505408'
+export GOOGLE_CLOUD_PROJECT='your-project-name'
 export TOKEN_OVERLAY_REFRESH_SECONDS=90
 
 # Optional, if your OpenAI organization needs to be specified explicitly:
@@ -124,7 +124,7 @@ For the local-bin installation, keep this file in the repository and export its
 absolute path in `~/.bashrc`, for example:
 
 ```bash
-export TOKEN_OVERLAY_ENV="$HOME/AAS/scripts/token_overlay/.env"
+export TOKEN_OVERLAY_ENV="$HOME/PATH/TO-SCRIPT/token_overlay/.env"
 ```
 
 Without this override, the installed copy looks for `~/.local/bin/.env`, not
